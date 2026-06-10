@@ -430,7 +430,7 @@
 }
 
     // Отправка в Telegram
-    function sendToTelegramAndShowScreen() {
+   function sendToTelegramAndShowScreen() {
   const choiceText = selectedFinalChoice === 'yes' ? '✅ Да' : selectedFinalChoice === 'maybe' ? '🤔 Может быть' : '❌ Нет';
   const text = `📨 <b>Ответы из теста «Очень странные дела»</b>\n\n` +
     `☀️ Утро: ${answers.morning}\n` +
@@ -442,9 +442,8 @@
     `📌 Финальный выбор: ${choiceText}`;
 
   const url = `https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`;
-  const finalUrl = 'https://corsproxy.io/?' + encodeURIComponent(url);
 
-  fetch(finalUrl, {
+  fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -463,7 +462,6 @@
     renderSentScreen();
   });
 }
-
     function renderSentScreen() {
       const html = `
         <div class="step-badge">Готово</div>
