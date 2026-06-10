@@ -393,22 +393,41 @@
     imageUrl = GIF_NO;
   }
 
-      const imageHtml = `<div style="display:flex; align-items:center; justify-content:center; height:100%;"><img src="${imageUrl}" alt="реакция" style="max-width:100%; border-radius:1.5rem;" /></div>`;
-      const messageHtml = `
-        <div class="step-badge">Ответ</div>
-        <p style="font-size:1.1rem; line-height:1.5; margin:1.2rem 0;">${message}</p>
-        <div style="display:flex; gap:0.8rem; margin-top:2rem; justify-content:center; flex-wrap:wrap;">
-          <button class="btn-gray" id="back-btn">← Вернуться</button>
-          <button class="primary-btn" id="send-btn">Завершить и отправить решение</button>
-        </div>`;
+  const messageHtml = `
+    <div class="step-badge">Ответ</div>
+    <p style="font-size:1.1rem; line-height:1.5; margin:1.2rem 0;">${message}</p>
+    <div style="display:flex; gap:0.8rem; margin-top:2rem; justify-content:center; flex-wrap:wrap;">
+      <button class="btn-gray" id="back-btn">← Вернуться</button>
+      <button class="primary-btn" id="send-btn">Завершить и отправить решение</button>
+    </div>`;
 
-      document.getElementById('app').innerHTML = `<div class="card" id="main-card" style="display:flex; align-items:center; justify-content:center;">${imageHtml}</div>`;
-      setTimeout(() => {
-        document.getElementById('app').innerHTML = `<div class="card" id="main-card">${messageHtml}</div>`;
-        document.getElementById('back-btn').addEventListener('click', () => goToStep(9));
-        document.getElementById('send-btn').addEventListener('click', () => goToStep(11));
-      }, 2000);
-    }
+  // Показываем картинку
+  document.getElementById('app').innerHTML = `
+    <div class="card" id="main-card" style="display:flex; align-items:center; justify-content:center;">
+      <div style="display:flex; align-items:center; justify-content:center; height:100%;">
+        <img src="${imageUrl}" alt="реакция" style="max-width:100%; border-radius:1.5rem;" id="reaction-gif" />
+      </div>
+    </div>`;
+
+  // Ждём загрузки картинки, потом включаем таймер на 2 секунды
+  const img = document.getElementById('reaction-gif');
+  img.onload = function() {
+    setTimeout(() => {
+      document.getElementById('app').innerHTML = `<div class="card" id="main-card">${messageHtml}</div>`;
+      document.getElementById('back-btn').addEventListener('click', () => goToStep(9));
+      document.getElementById('send-btn').addEventListener('click', () => goToStep(11));
+    }, 2000);
+  };
+
+  // Если картинка уже в кэше и onload не сработал — запускаем таймер сразу
+  if (img.complete) {
+    setTimeout(() => {
+      document.getElementById('app').innerHTML = `<div class="card" id="main-card">${messageHtml}</div>`;
+      document.getElementById('back-btn').addEventListener('click', () => goToStep(9));
+      document.getElementById('send-btn').addEventListener('click', () => goToStep(11));
+    }, 2000);
+  }
+}
 
     // Отправка в Telegram
     function sendToTelegramAndShowScreen() {
